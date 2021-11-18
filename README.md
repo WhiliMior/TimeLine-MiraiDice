@@ -3,15 +3,23 @@
 
 
 使用软件包：
+
+
 pip install miraicle
+
+
 pip install pandas
+
 
 开始使用：
 准备一个mirai平台
+
 为mirai安装mirai-api-http插件
 
 将mirai-api-http的setting.yml文件设置好后，复制到该项目的根目录
+
 打开根目录下的setting.yml，在末尾加上一行：
+
   qq: 你的机器人的qq号
   
 开始使用
