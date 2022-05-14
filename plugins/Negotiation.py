@@ -4,6 +4,7 @@ import re
 import codecs
 import random
 import os
+import pandas as pd
 
 
 def check_string(re_exp, str):
@@ -23,14 +24,21 @@ def negotiation_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
     if message_check:
         pattern = re.compile(r'-?[0-9]+[.]?[0-9]*')
         quantity = len(re.findall(pattern, msg.plain))
-        file_name = 'group_negotiation_' + str(msg.group)
+        file_name = f'data/grp_{str(msg.group)}/grp_ngo_{str(msg.group)}.txt'
         number_list = pattern.findall(msg.plain)
         target_level_name = '交涉对象等级'
         target_intelligence_name = '交涉对象智力'
 
+        folder = f'data/grp_{str(msg.group)}'
+        # 创建文件夹
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
+        player_file = f'data/{str(msg.sender)}/plr_{str(msg.sender)}.csv'
+
         # 写入数值,attribute应为list
         def write_value(attributes):
-            f = codecs.open(r'data\%s.txt' % file_name, 'w', 'utf-8')
+            f = codecs.open(file_name, 'w', 'utf-8')
             for line in attributes:
                 f.write('%s\n' % line)
             f.close()
@@ -49,32 +57,33 @@ def negotiation_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
             content = [target_level_name + target_level, target_intelligence_name + target_intelligence]
             write_value(content)
 
-        # 查找属性数值
-        def read_attribute(element):
-            file_name = str(msg.sender)
-            if os.path.exists(r'data\%s.txt' % file_name) is False:
-                return None
+        # 提取玩家dict
+        if os.path.exists(player_file) is False:
+            send = '没有角色！'
+        else:
+            csv_file = open(player_file, 'r', newline='', encoding='utf-8-sig', errors='ignore')
+            player_dataframe = pd.read_csv(csv_file, header=0, sep=',')
+            csv_file.close()
+            using_index = player_dataframe["using"].idxmax()
+            character_code = player_dataframe.at[using_index, 'code']
+            character_file = f'data/{str(msg.sender)}/chr_{character_code}.txt'
+            f = codecs.open(character_file, 'r+', 'utf-8')
+            attribute_dict = eval(f.read())  # 读取的str转换为字典
+            f.close()
+
+        # def将dict中属性提取为float
+        def read_numeral_attribute(element):
+            if element in attribute_dict.keys():
+                return float(attribute_dict[element])
             else:
-                f = codecs.open(r'data\%s.txt' % file_name, 'r', 'utf-8')
-                lines = f.readlines()
-                for line in lines:
-                    if element in line:
-                        reg_ex = '-?[0-9]{1,}[.]?[0-9]*'
-                        check = check_string(reg_ex, line)
-                        if check:
-                            # 输出一个只包含单个属性数字的列表，然后转换成str
-                            return float(''.join(re.findall(reg_ex, line)))
-                        else:
-                            return float(0)
-                f.close()
+                return None
 
         # 读取目标数值数据
         def read_attribute_target(element):
-            file_name = 'group_negotiation_' + str(msg.group)
-            if os.path.exists(r'data\%s.txt' % file_name) is False:
+            if os.path.exists(file_name) is False:
                 return None
             else:
-                f = codecs.open(r'data\%s.txt' % file_name, 'r', 'utf-8')
+                f = codecs.open(file_name, 'r', 'utf-8')
                 lines = f.readlines()
                 for line in lines:
                     if element in line:
@@ -87,18 +96,12 @@ def negotiation_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
                             return float(0)
                 f.close()
 
-        # 提取中文属性
-        def read_chinese_attribute(element):
-            file_name = str(msg.sender)
-            if os.path.exists(r'data\%s.txt' % file_name) is False:
-                return None
+        # def将dict中属性提取为str
+        def read_character_attribute(element):
+            if element in attribute_dict.keys():
+                return str(attribute_dict[element])
             else:
-                f = codecs.open(r'data\%s.txt' % file_name, 'r', 'utf-8')
-                lines = f.readlines()
-                for line in lines:
-                    if element in line:
-                        return ''.join(line.split(element)).strip()
-                f.close()
+                return None
 
         # 给出默认分数0
         rp_grade = 0
@@ -111,11 +114,11 @@ def negotiation_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
             rp_grade = float(number_list[0])
 
         # 检查是否有数据
-        if os.path.exists(r'data\%s.txt' % file_name) is False \
+        if os.path.exists(file_name) is False \
                 or read_attribute_target(target_level_name) is None \
                 or read_attribute_target(target_intelligence_name) is None:
             send = '没有交涉对象！'
-        elif read_attribute('交涉加成') is None or read_attribute('等级') is None:
+        elif read_numeral_attribute('交涉加成') is None or read_numeral_attribute('等级') is None:
             if quantity == 3:
                 send = '已设定交涉对象，但没有导入数据！'
             elif quantity == 2:
@@ -123,10 +126,10 @@ def negotiation_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
             elif quantity == 1:
                 send = '没有导入数据！'
         else:
-            negotiation_buff = read_attribute('交涉加成')
+            negotiation_buff = read_numeral_attribute('交涉加成')
             target_level = read_attribute_target(target_level_name)
             target_intelligence = read_attribute_target(target_intelligence_name)
-            level = read_attribute('等级')
+            level = read_numeral_attribute('等级')
             success_rate = int_number(((rp_grade + negotiation_buff) / target_intelligence * 10)
                                       * (math.log(level / target_level, math.e) + 1))
             random_number = random.randint(1, 100)
@@ -136,7 +139,7 @@ def negotiation_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
             else:
                 check_result = '成功！'
 
-            character_name = read_chinese_attribute('姓名')
+            character_name = read_character_attribute('姓名')
 
             if quantity == 3 or quantity == 1:
                 send = character_name + '进行交涉检定' + '\n' + \
@@ -150,6 +153,7 @@ def negotiation_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
                 send = '请正确输入.ne指令！'
 
         bot.send_group_msg(group=msg.group, msg=send, quote=msg.id)
+
 
 @miraicle.Mirai.receiver('FriendMessage')
 def negotiation_to_friend(bot: miraicle.Mirai, msg: miraicle.FriendMessage):

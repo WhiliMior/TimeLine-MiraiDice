@@ -22,22 +22,26 @@ def target_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
     if message_check:
         pattern = re.compile(r'-?[0-9]+[.]?[0-9]*')
         quantity = len(re.findall(pattern, msg.plain))
-        file_name = 'group_target_' + str(msg.group)
+        file_name = f'data/grp_{str(msg.group)}/grp_tar_{str(msg.group)}.txt'
         number_list = pattern.findall(msg.plain)
         value_name = '目标数值'
 
+        folder = f'data/grp_{str(msg.group)}'
+        # 创建文件夹
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
         # 写入数值
         def replace_value(attribute, value):
-            f = codecs.open(r'data\%s.txt' % file_name, 'w', 'utf-8')
+            f = codecs.open(file_name, 'w', 'utf-8')
             f.write(attribute + value)
             f.close()
 
         def read_attribute_group(element):
-            file_name = 'group_target_' + str(msg.group)
-            if os.path.exists(r'data\%s.txt' % file_name) is False:
+            if os.path.exists(file_name) is False:
                 return None
             else:
-                f = codecs.open(r'data\%s.txt' % file_name, 'r', 'utf-8')
+                f = codecs.open(file_name, 'r', 'utf-8')
                 lines = f.readlines()
                 for line in lines:
                     if element in line:
