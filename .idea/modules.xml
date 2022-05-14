@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$USER_HOME$/OneDrive/Projects/Bots/TL Bot Configs/.idea/TL Bot Configs.iml" filepath="$USER_HOME$/OneDrive/Projects/Bots/TL Bot Configs/.idea/TL Bot Configs.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/mcl_py.iml" filepath="$PROJECT_DIR$/.idea/mcl_py.iml" />
     </modules>
   </component>
