@@ -5,6 +5,12 @@ import pandas as pd
 import codecs
 import os
 
+"""
+.bat 直接显示时间轴
+.bat end 删除时间轴
+.bat {属性} {时间}t/{影响数值} (笔记)  战斗指令
+"""
+
 
 def check_string(re_exp, str):
     res = re.search(re_exp, str, re.I)

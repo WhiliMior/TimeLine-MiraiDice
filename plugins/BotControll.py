@@ -2,6 +2,12 @@ import miraicle
 import re
 import codecs
 
+"""
+.bot 机器人信息
+.bot on 开启本群功能
+.bot off 关闭本群功能
+"""
+
 
 def get_value(key):
     f = codecs.open(r'setting.yml', 'r', 'utf-8')

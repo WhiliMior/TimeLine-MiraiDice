@@ -5,6 +5,10 @@ import random
 import os
 import pandas as pd
 
+"""
+.ex {属性/领域} 进行检定
+"""
+
 
 def check_string(re_exp, str):
     res = re.search(re_exp, str, re.I)

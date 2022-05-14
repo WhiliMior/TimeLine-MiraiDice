@@ -5,6 +5,13 @@ import os
 import csv
 import pandas as pd
 
+"""
+.crd 体力/意志 {变化值}
+.crd hp/mp {变化值}
+.crd reset
+.crd del 删除记录
+"""
+
 
 def check_string(re_exp, str):
     res = re.search(re_exp, str, re.I)

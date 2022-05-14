@@ -4,6 +4,11 @@ import codecs
 import os
 import pandas as pd
 
+"""
+.pre {属性} {影响数值} 计算时间
+.pre {属性} {时间}t 计算数值
+"""
+
 
 def check_string(re_exp, str):
     res = re.search(re_exp, str, re.I)

@@ -6,6 +6,12 @@ import random
 import os
 import pandas as pd
 
+"""
+.neg {rp评分} 进行交涉
+.neg {对象等级} {对象智力%} 设定交涉对象
+.neg {rp评分} {对象等级} {对象智力%} 设定交涉对象并交涉
+"""
+
 
 def check_string(re_exp, str):
     res = re.search(re_exp, str, re.I)
@@ -71,86 +77,86 @@ def negotiation_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
             attribute_dict = eval(f.read())  # 读取的str转换为字典
             f.close()
 
-        # def将dict中属性提取为float
-        def read_numeral_attribute(element):
-            if element in attribute_dict.keys():
-                return float(attribute_dict[element])
-            else:
-                return None
+            # def将dict中属性提取为float
+            def read_numeral_attribute(element):
+                if element in attribute_dict.keys():
+                    return float(attribute_dict[element])
+                else:
+                    return None
 
-        # 读取目标数值数据
-        def read_attribute_target(element):
-            if os.path.exists(file_name) is False:
-                return None
-            else:
-                f = codecs.open(file_name, 'r', 'utf-8')
-                lines = f.readlines()
-                for line in lines:
-                    if element in line:
-                        reg_ex = '-?[0-9]{1,}[.]?[0-9]*'
-                        check = check_string(reg_ex, line)
-                        if check:
-                            # 输出一个只包含单个属性数字的列表，然后转换成str
-                            return float(''.join(re.findall(reg_ex, line)))
-                        else:
-                            return float(0)
-                f.close()
+            # 读取目标数值数据
+            def read_attribute_target(element):
+                if os.path.exists(file_name) is False:
+                    return None
+                else:
+                    f = codecs.open(file_name, 'r', 'utf-8')
+                    lines = f.readlines()
+                    for line in lines:
+                        if element in line:
+                            reg_ex = '-?[0-9]{1,}[.]?[0-9]*'
+                            check = check_string(reg_ex, line)
+                            if check:
+                                # 输出一个只包含单个属性数字的列表，然后转换成str
+                                return float(''.join(re.findall(reg_ex, line)))
+                            else:
+                                return float(0)
+                    f.close()
 
-        # def将dict中属性提取为str
-        def read_character_attribute(element):
-            if element in attribute_dict.keys():
-                return str(attribute_dict[element])
-            else:
-                return None
+            # def将dict中属性提取为str
+            def read_character_attribute(element):
+                if element in attribute_dict.keys():
+                    return str(attribute_dict[element])
+                else:
+                    return None
 
-        # 给出默认分数0
-        rp_grade = 0
-        if quantity == 3:
-            rp_grade = float(number_list[0])
-            write_target_attribute(number_list[1], number_list[2])
-        elif quantity == 2:
-            write_target_attribute(number_list[0], number_list[1])
-        elif quantity == 1:
-            rp_grade = float(number_list[0])
-
-        # 检查是否有数据
-        if os.path.exists(file_name) is False \
-                or read_attribute_target(target_level_name) is None \
-                or read_attribute_target(target_intelligence_name) is None:
-            send = '没有交涉对象！'
-        elif read_numeral_attribute('交涉加成') is None or read_numeral_attribute('等级') is None:
+            # 给出默认分数0
+            rp_grade = 0
             if quantity == 3:
-                send = '已设定交涉对象，但没有导入数据！'
+                rp_grade = float(number_list[0])
+                write_target_attribute(number_list[1], number_list[2])
             elif quantity == 2:
-                send = '已设定交涉对象！'
+                write_target_attribute(number_list[0], number_list[1])
             elif quantity == 1:
-                send = '没有导入数据！'
-        else:
-            negotiation_buff = read_numeral_attribute('交涉加成')
-            target_level = read_attribute_target(target_level_name)
-            target_intelligence = read_attribute_target(target_intelligence_name)
-            level = read_numeral_attribute('等级')
-            success_rate = int_number(((rp_grade + negotiation_buff) / target_intelligence * 10)
-                                      * (math.log(level / target_level, math.e) + 1))
-            random_number = random.randint(1, 100)
+                rp_grade = float(number_list[0])
 
-            if random_number > success_rate:
-                check_result = '失败！'
+            # 检查是否有数据
+            if os.path.exists(file_name) is False \
+                    or read_attribute_target(target_level_name) is None \
+                    or read_attribute_target(target_intelligence_name) is None:
+                send = '没有交涉对象！'
+            elif read_numeral_attribute('交涉加成') is None or read_numeral_attribute('等级') is None:
+                if quantity == 3:
+                    send = '已设定交涉对象，但没有导入数据！'
+                elif quantity == 2:
+                    send = '已设定交涉对象！'
+                elif quantity == 1:
+                    send = '没有导入数据！'
             else:
-                check_result = '成功！'
+                negotiation_buff = read_numeral_attribute('交涉加成')
+                target_level = read_attribute_target(target_level_name)
+                target_intelligence = read_attribute_target(target_intelligence_name)
+                level = read_numeral_attribute('等级')
+                success_rate = int_number(((rp_grade + negotiation_buff) / target_intelligence * 10)
+                                          * (math.log(level / target_level, math.e) + 1))
+                random_number = random.randint(1, 100)
 
-            character_name = read_character_attribute('姓名')
+                if random_number > success_rate:
+                    check_result = '失败！'
+                else:
+                    check_result = '成功！'
 
-            if quantity == 3 or quantity == 1:
-                send = character_name + '进行交涉检定' + '\n' + \
-                       'RP：' + str_number(rp_grade) + '\n' + \
-                       '成功率：' + str_number(success_rate) + '%' + '\n' + \
-                       '检定：' + str(random_number) + '/' + str(success_rate) + '\n' + \
-                       check_result
-            elif quantity == 2:
-                send = '已设定交涉对象！'
-            else:
-                send = '请正确输入.ne指令！'
+                character_name = read_character_attribute('姓名')
+
+                if quantity == 3 or quantity == 1:
+                    send = character_name + '进行交涉检定' + '\n' + \
+                           'RP：' + str_number(rp_grade) + '\n' + \
+                           '成功率：' + str_number(success_rate) + '%' + '\n' + \
+                           '检定：' + str(random_number) + '/' + str(success_rate) + '\n' + \
+                           check_result
+                elif quantity == 2:
+                    send = '已设定交涉对象！'
+                else:
+                    send = '请正确输入.ne指令！'
 
         bot.send_group_msg(group=msg.group, msg=send, quote=msg.id)
 

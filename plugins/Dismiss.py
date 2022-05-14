@@ -1,6 +1,10 @@
 import miraicle
 import re
 
+"""
+.dismiss 退群
+"""
+
 
 def check_string(re_exp, str):
     res = re.search(re_exp, str, re.I)

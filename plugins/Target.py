@@ -4,6 +4,12 @@ import codecs
 import random
 import os
 
+"""
+.tar {目标数值} 固定数值
+.tar {等级} {难度} 计算数值
+.tar {等级}d 随机难度
+"""
+
 
 def check_string(re_exp, str):
     res = re.search(re_exp, str, re.I)
@@ -63,19 +69,20 @@ def target_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
             target_value = random_number * float(''.join(number_list))
             target_value = str_number(target_value)
             replace_value(value_name, target_value)
-            send = '已设定目标数值为' + target_value
+            send = f'随机难度：{random_number}\n' \
+                   f'已设定目标数值为{target_value}'
         elif quantity == 1:
             target_value = float(''.join(number_list))
             target_value = str_number(target_value)
             replace_value(value_name, target_value)
-            send = '已设定目标数值为' + target_value
+            send = f'已设定目标数值为{target_value}'
         elif quantity == 2:
             target_value_1 = float(number_list[0])
             target_value_2 = float(number_list[1])
             target_value = target_value_1 * target_value_2
             target_value = str_number(target_value)
             replace_value(value_name, target_value)
-            send = '已设定目标数值为' + target_value
+            send = f'已设定目标数值为{target_value}'
         elif quantity == 0:
             target_value = read_attribute_group('目标数值')
             if os.path.exists(r'data\%s.txt' % file_name) is False or target_value is None:
@@ -85,7 +92,7 @@ def target_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
         else:
             send = '请正确输入.ta指令！'
 
-        bot.send_group_msg(group=msg.group, msg=send)
+        bot.send_group_msg(group=msg.group, msg=send,  quote=msg.id)
 
 
 @miraicle.Mirai.receiver('FriendMessage')
