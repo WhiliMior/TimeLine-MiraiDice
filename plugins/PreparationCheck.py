@@ -23,7 +23,6 @@ def preparation_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
         # 通过正则匹配指令后的内容
         pattern = re.compile(r'^(^([.]|[。])pr[ep]?)', re.I)
         attributes = str(pattern.sub('', msg.plain).strip())
-        file_name = str(msg.sender)
         pattern_attribute = re.compile(r'[\u4e00-\u9fa5]+')
         pattern_number = re.compile(r'-?[0-9]+[.]?[0-9]*t?', re.I)
         attribute_list = pattern_attribute.findall(attributes)
@@ -78,7 +77,7 @@ def preparation_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
                        '影响数值：' + str_number(impact_number) + '\n' + \
                        '时间：' + str_number(time) + 't'
 
-            bot.send_group_msg(group=msg.group, msg=send, quote=msg.id)
+        bot.send_group_msg(group=msg.group, msg=send, quote=msg.id)
 
 
 @miraicle.Mirai.receiver('FriendMessage')
@@ -88,7 +87,6 @@ def preparation_to_friend(bot: miraicle.Mirai, msg: miraicle.FriendMessage):
         # 通过正则匹配指令后的内容
         pattern = re.compile(r'^(^([.]|[。])pr[ep]?)', re.I)
         attributes = str(pattern.sub('', msg.plain).strip())
-        file_name = str(msg.sender)
         pattern_attribute = re.compile(r'[\u4e00-\u9fa5]+')
         pattern_number = re.compile(r'-?[0-9]+[.]?[0-9]*t?', re.I)
         attribute_list = pattern_attribute.findall(attributes)

@@ -15,9 +15,9 @@ def get_value(key):
     f.close()
 
 
-qq = get_value('qq')
+qq = int(get_value('qq'))
 verify_key = get_value('verifyKey')
-port = get_value('port')
+port = int(get_value('port'))
 
 
 bot = miraicle.Mirai(qq=qq, verify_key=verify_key, port=port)
