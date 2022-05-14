@@ -24,4 +24,4 @@ pip install pandas
   
 开始使用
 
---待更
+运行run_bot.cmd！
