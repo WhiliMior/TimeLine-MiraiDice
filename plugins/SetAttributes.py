@@ -135,7 +135,7 @@ def record_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
         dexterity = read_numeral_attribute('敏捷')
         dexterity_check = physical_revision * dexterity / 100 * weight_revision
         dexterity_check = reserve_decimals(dexterity_check)
-        add_attribute('敏捷', dexterity_check)
+        add_attribute('敏捷_检定', dexterity_check)
 
         # 计算思维
         mental_revision = mental * mental_age_revision
@@ -335,7 +335,7 @@ def record_to_friend(bot: miraicle.Mirai, msg: miraicle.FriendMessage):
         dexterity = read_numeral_attribute('敏捷')
         dexterity_check = physical_revision * dexterity / 100 * weight_revision
         dexterity_check = reserve_decimals(dexterity_check)
-        add_attribute('敏捷', dexterity_check)
+        add_attribute('敏捷_检定', dexterity_check)
 
         # 计算思维
         mental_revision = mental * mental_age_revision
