@@ -65,7 +65,9 @@ def battle_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
             if attribute_quantity < 2:
                 note = ''
             else:
-                note = attribute_list[1]
+                attributes_list = attributes.split()
+                note = attributes_list[-1]
+                print(note)
 
             # 查找角色属性
             player_file = f'data/{str(msg.sender)}/plr_{str(msg.sender)}.csv'
