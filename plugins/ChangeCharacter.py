@@ -6,6 +6,7 @@ import pandas as pd
 """
 .chr 显示现有角色
 .chr {序号} 选择角色
+.chr show 显示角色属性
 .chr del {序号} 删除选定角色
 """
 
