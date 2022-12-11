@@ -84,12 +84,10 @@ def change_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
                     if value.replace(".", "").isnumeric():
                         # convert the value to a float
                         value = float(value)
-                        # check if the value is not equal to zero
-                        if value != 0:
-                            # round the number to two decimal places
-                            value = round(value, 2)
-                            # add the attribute name and value to the string
-                            send += key + ": " + str(value) + "\n"
+                        # round the number to two decimal places
+                        value = round(value, 2)
+                        # add the attribute name and value to the string
+                        send += key + ": " + str(value) + "\n"
                     else:
                         # add the attribute name and value to the string
                         send += key + ": " + str(value) + "\n"
