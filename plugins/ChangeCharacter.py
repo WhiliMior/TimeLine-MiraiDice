@@ -62,6 +62,35 @@ def change_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
                         using = '[●]'
                     send_list.append(f'{("{} {}".format(using, data[1]))}')
                 send = send + '\n' + "\n".join(send_list) + '\n' + '请在指令后使用索引数字来更改角色选择'
+            elif check_string('show', message):
+                csv_file = open(player_file, 'r', newline='', encoding='utf-8-sig', errors='ignore')
+                player_dataframe = pd.read_csv(csv_file, header=0, sep=',')
+                csv_file.close()
+                using_index = player_dataframe["using"].idxmax()
+                character_code = player_dataframe.at[using_index, 'code']
+                character_file = f'data/{str(msg.sender)}/chr_{character_code}.txt'
+                f = codecs.open(character_file, 'r+', 'utf-8')
+                attribute_dict = eval(f.read())  # 读取的str转换为字典
+                f.close()
+
+                # create an empty string to store the character's attributes
+                send = ""
+
+                # loop through the attributes in the attribute_dict dictionary
+                for key, value in attribute_dict.items():
+                    # check if the value is a number
+                    if value.replace(".", "").isnumeric():
+                        # convert the value to a float
+                        value = float(value)
+                        # check if the value is not equal to zero
+                        if value != 0:
+                            # round the number to two decimal places
+                            value = round(value, 2)
+                            # add the attribute name and value to the string
+                            send += key + ": " + str(value) + "\n"
+                    else:
+                        # add the attribute name and value to the string
+                        send += key + ": " + str(value) + "\n"
             elif check_string('del', message):
                 pattern = re.compile(r'(del)', re.I)
                 index = eval(pattern.sub('', message).strip())
@@ -131,6 +160,35 @@ def change_to_friend(bot: miraicle.Mirai, msg: miraicle.FriendMessage):
                         using = '[●]'
                     send_list.append(f'{("{} {}".format(using, data[1]))}')
                 send = send + '\n' + "\n".join(send_list) + '\n' + '请在指令后使用索引数字来更改角色选择'
+            elif check_string('show', message):
+                csv_file = open(player_file, 'r', newline='', encoding='utf-8-sig', errors='ignore')
+                player_dataframe = pd.read_csv(csv_file, header=0, sep=',')
+                csv_file.close()
+                using_index = player_dataframe["using"].idxmax()
+                character_code = player_dataframe.at[using_index, 'code']
+                character_file = f'data/{str(msg.sender)}/chr_{character_code}.txt'
+                f = codecs.open(character_file, 'r+', 'utf-8')
+                attribute_dict = eval(f.read())  # 读取的str转换为字典
+                f.close()
+
+                # create an empty string to store the character's attributes
+                send = ""
+
+                # loop through the attributes in the attribute_dict dictionary
+                for key, value in attribute_dict.items():
+                    # check if the value is a number
+                    if value.replace(".", "").isnumeric():
+                        # convert the value to a float
+                        value = float(value)
+                        # check if the value is not equal to zero
+                        if value != 0:
+                            # round the number to two decimal places
+                            value = round(value, 2)
+                            # add the attribute name and value to the string
+                            send += key + ": " + str(value) + "\n"
+                    else:
+                        # add the attribute name and value to the string
+                        send += key + ": " + str(value) + "\n"
             elif check_string('del', message):
                 pattern = re.compile(r'(del)', re.I)
                 index = eval(pattern.sub('', message).strip())
