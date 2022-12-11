@@ -62,12 +62,16 @@ def battle_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
 
             attribute_quantity = len(re.findall(pattern_attribute, str(attribute_list)))
             attribute = attribute_list[0]
-            if attribute_quantity < 2:
-                note = ''
-            else:
-                attributes_list = attributes.split()
+
+            attributes_list = attributes.split()
+
+            # Check if the list contains at least two elements
+            if len(attributes_list) > 2:
+                # Set the "note" to the last element in the list
                 note = attributes_list[-1]
-                print(note)
+            else:
+                # Set the "note" to an empty string
+                note = ''
 
             # 查找角色属性
             player_file = f'data/{str(msg.sender)}/plr_{str(msg.sender)}.csv'
@@ -225,17 +229,17 @@ def battle_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
                         cycle += 1
                         value_list = character_dict.get(int(cycle), '')
 
-                        # 如果没有note，则不会打印换行符
+                        # 如果没有note，则只打印相关属性。否则在相关属性后加上note
                         if str(value_list[5]) == '':
-                            send_note = ''
+                            send_note = attribute + '\n'
                         else:
-                            send_note = str(value_list[3]) + '\n'
+                            send_note = attribute + ': ' + str(value_list[5]) + '\n'
                         if check_string('fs', message):
                             full_spec = str(value_list[3]) + ' : ' + str(value_list[2]) + '\n'
                         else:
                             full_spec = ''
                         group_send = str(value_list[0]) + '\n' + \
-                                     str(value_list[1]) + ' : ' + str(value_list[4]) + '\n' + \
+                                     str(value_list[1]) + f' ({value_list[3]})' + ' : ' + str(value_list[4]) + '\n' + \
                                      full_spec + \
                                      send_note + '———————' + '\n'
 
