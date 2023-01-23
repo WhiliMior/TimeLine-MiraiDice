@@ -21,6 +21,11 @@ def check_string(re_exp, str):
         return False
 
 
+# def保留两位小数
+def reserve_decimals(number):
+    return float(format(number, '.2f'))
+
+
 reg_exp = '^([.]|[。])crd?.*'
 
 
@@ -90,10 +95,10 @@ def record_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
 
             # 如果文件不存在则直接写
             if os.path.exists(file_name) is False:
-                hp_full = str(read_numeral_attribute(index_hp_full))
-                hp_left = hp_full
-                mp_full = str(read_numeral_attribute(index_mp_full))
-                mp_left = mp_full
+                hp_full = reserve_decimals(str(read_numeral_attribute(index_hp_full)))
+                hp_left = reserve_decimals(hp_full)
+                mp_full = reserve_decimals(str(read_numeral_attribute(index_mp_full)))
+                mp_left = reserve_decimals(mp_full)
                 hp_ratio = calculate_ratio(hp_left, hp_full)
                 mp_ratio = calculate_ratio(mp_left, mp_full)
                 cash = str(read_numeral_attribute(index_cash))
@@ -107,12 +112,12 @@ def record_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
                        '体力: ' + hp_left + '/' + hp_full + hp_ratio + '\n' + \
                        '意志: ' + mp_left + '/' + mp_full + mp_ratio + '\n' + \
                        '现金: ' + cash
-            elif check_string(r'reset', message):
+            if check_string(r'reset', message):
                 datas = get_dataframe()
-                hp_full = str(read_numeral_attribute(index_hp_full))
-                hp_left = hp_full
-                mp_full = str(read_numeral_attribute(index_mp_full))
-                mp_left = mp_full
+                hp_full = reserve_decimals(str(read_numeral_attribute(index_hp_full)))
+                hp_left = reserve_decimals(hp_full)
+                mp_full = reserve_decimals(str(read_numeral_attribute(index_mp_full)))
+                mp_left = reserve_decimals(mp_full)
                 hp_ratio = calculate_ratio(hp_left, hp_full)
                 mp_ratio = calculate_ratio(mp_left, mp_full)
                 cash = str(datas.loc[0, index_cash])

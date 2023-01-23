@@ -128,11 +128,12 @@ def battle_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
                     index_cumulative_time = '累计行动时间'
                     index_cumulative_impact_number = '累计影响数值'
                     index_note = '笔记'
+                    index_attribute = '属性'
                     # header第一项空出来，以便第一列作为index读取在dataframe
                     header = ['', index_time, index_impact_number, index_cumulative_time,
-                              index_cumulative_impact_number, index_note]
+                              index_cumulative_impact_number, index_note, index_attribute]
                     character_index = f'{msg.sender}_{character_code}'
-                    row = [character_index, time, impact_number, time, impact_number, note]
+                    row = [character_index, time, impact_number, time, impact_number, note, attribute]
 
                     # 文件存在则提取玩家数据到dataframe
                     # 如果文件不存在则直接写
@@ -168,6 +169,7 @@ def battle_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
                             index_cumulative_time = '累计行动时间'
                             index_cumulative_impact_number = '累计影响数值'
                             index_note = '笔记'
+                            index_attribute = '属性'
                             '''
                             # 修改累计时间
                             cumulative_time = dict_dataframe.loc[character_index, index_cumulative_time]
@@ -231,9 +233,9 @@ def battle_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
 
                         # 如果没有note，则只打印相关属性。否则在相关属性后加上note
                         if str(value_list[5]) == '':
-                            send_note = attribute + '\n'
+                            send_note = str(value_list[6]) + '\n'
                         else:
-                            send_note = attribute + ': ' + str(value_list[5]) + '\n'
+                            send_note = str(value_list[6]) + ': ' + str(value_list[5]) + '\n'
                         if check_string('fs', message):
                             full_spec = str(value_list[3]) + ' : ' + str(value_list[2]) + '\n'
                         else:
