@@ -1,6 +1,7 @@
 # TimeLine-MiraiDice
 这是一个为Time Line TRPG规则跑团服务的，基于miraicle的python程序
 
+#**该项目已被停止维护，计划对代码进行整体重构并迁移至更新的框架**#
 
 使用软件包：
 
