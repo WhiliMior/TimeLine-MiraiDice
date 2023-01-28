@@ -183,6 +183,8 @@ def battle_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
                             dict_dataframe.loc[character_index, index_cumulative_impact_number] = impact_number_now
                             # 修改笔记
                             dict_dataframe.loc[character_index, index_note] = note
+                            # 修改属性
+                            dict_dataframe.loc[character_index, index_attribute] = attribute
                             # 将新dataframe写回去
                             dict_dataframe.to_csv(file_bat)
 
@@ -223,7 +225,7 @@ def battle_to_group(bot: miraicle.Mirai, msg: miraicle.GroupMessage):
                         # 信息写入字典
                         line_number += 1
                         character_dict[line_number] = [character_name, cumulative_time, cumulative_impact_number,
-                                                       time, impact_number, note]
+                                                       time, impact_number, note, attribute]
 
                     # 打轴
                     cycle = 0
